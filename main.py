@@ -9,12 +9,18 @@ import os
 
 class TicTacToe:
     def __init__(self):
+        """
+        Initiates the board with empty values.
+        """
         self._board = [[0, 0, 0],
                        [0, 0, 0],
                        [0, 0, 0]]
         self._characters = [' ', '◯', '✕']
 
     def get_possible_moves(self):
+        """
+        Returns list of tuples containing possible moves on the board.
+        """
         possibilities = []
         for y in range(3):
             for x in range(3):
@@ -23,6 +29,9 @@ class TicTacToe:
         return possibilities if possibilities else False
 
     def ask_player_for_move(self, player):
+        """
+        Asks player for coordinates, then proceeds to performing the move.
+        """
         print(f'{"What is your move?":^80}')
         print(f'{"Type in each value and press Enter:":^80}')
         while True:
@@ -36,6 +45,10 @@ class TicTacToe:
         self._do_move(x, y, player)
 
     def _ask_player_for_value(self, value_name):
+        """
+        Asks player for integer balue between 1 and 3
+        as long as it is correct.
+        """
         while True:
             try:
                 value = int(input(f'{f"{value_name} = ":>40}'))
@@ -47,9 +60,16 @@ class TicTacToe:
                 print(f'{"Oops! The input must be an int from 1 to 3!":^80}')
 
     def _interpret_human_move(self, x, y):
+        """
+        Converts human-friendly coordinates into computer-friendly ones,
+        as indexes start from 0.
+        """
         return x-1, 3-y
 
     def _do_move(self, x, y, player):
+        """
+        Performs the move.
+        """
         self._board[y][x] = 1 if player else -1
 
     def _generate_ascii_board(self):
@@ -104,6 +124,10 @@ def minimax():
 
 
 def clear_screen():
+    """
+    Clears the screen both in Terminal and Command Prompt.
+    Tested on macOS and Windows.
+    """
     os.system('clear||cls')
 
 

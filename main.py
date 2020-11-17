@@ -4,6 +4,7 @@
 except ModuleNotFoundError:
     COLOR_INSTALLED = False
 '''
+import os
 
 
 class TicTacToe:
@@ -21,8 +22,8 @@ class TicTacToe:
                     possibilities.append((x, y))
         return possibilities if possibilities else False
 
-    def interpret_human_move(self, x, y):
-        self.do_move(x-1, 3-y, True)
+    def interpret_human_move(self, x, y, player):
+        self.do_move(x-1, 3-y, player)
 
     def do_move(self, x, y, player):
         self._board[y % 3][x % 3] = 1 if player else -1
@@ -48,13 +49,13 @@ class TicTacToe:
             output.append(inner_frame if row_counter < 3 else lower_frame)
         return tuple(output)
 
-    def print_ascii_layout(self, player=True):
+    def print_ascii_layout(self, next_player=True):
         """
         Masterpiece of ASCII engineering.
         Not really important.
         """
         output = f'\n\n\n\n{"Tic Tac Toe":^80}\n\n'
-        temp = f"It's {'◯' if player else '✕'} turn!"
+        temp = f"It's {'◯' if next_player else '✕'} turn!"
         output += f'{temp:^80}\n\n'
         counter = 0
         for line in self._generate_ascii_board():
@@ -62,6 +63,7 @@ class TicTacToe:
             temp = f'{4 - counter // 2 if counter % 2 == 0 else ""} {line}  '
             output += f'{temp:^80}\n'
         output += f'{"1   2   3":^80}\n\n\n'
+        clear_screen()
         print(output)
 
 
@@ -77,8 +79,12 @@ def minimax():
     pass
 
 
+def clear_screen():
+    os.system('clear||cls')
+
+
 if __name__ == "__main__":
     game = TicTacToe()
-    game.interpret_human_move(3, 3)
+    game.interpret_human_move(3, 3, True)
+    game.interpret_human_move(1, 2, False)
     game.print_ascii_layout()
-    print(game.get_possible_moves())

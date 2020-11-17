@@ -22,6 +22,14 @@ class TicTacToe:
                     possibilities.append((x, y))
         return possibilities if possibilities else False
 
+    def is_the_game_over(self):
+        if self.get_possible_moves():
+            if not self._check_diagonals():
+                if not self._check_columns():
+                    if not self._check_rows():
+                        return False
+        return True
+
     def _check_diagonals(self):
         """
         Checks whether any diagonal belongs to one player.

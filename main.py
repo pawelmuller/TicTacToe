@@ -35,6 +35,9 @@ class TicTacToe:
                     possibilities.append((x, y))
         return possibilities if possibilities else False
 
+    def do_move(self, x, y, player):
+        self._board[2-y][x] = 1 if player else -1
+
 
 class Node:
     def __init__(self):
@@ -51,4 +54,3 @@ def minimax():
 if __name__ == "__main__":
     game = TicTacToe()
     print(game.generate_ascii_board())
-

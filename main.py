@@ -22,7 +22,7 @@ class TicTacToe:
                     possibilities.append((x, y))
         return possibilities if possibilities else False
 
-    def ask_player_for_move(self, player):
+    def _ask_player_for_move(self, player):
         """
         Asks player for coordinates, then proceeds to performing the move.
         """
@@ -104,6 +104,9 @@ class TicTacToe:
         clear_screen()
         print(output)
 
+    def start(self, is_singleplayer=True, is_impossible=False):
+        pass
+
 
 class Node:
     def __init__(self):
@@ -130,9 +133,9 @@ if __name__ == "__main__":
     x, y = game._interpret_human_move(3, 3)
     game._do_move(x, y, True)
     game.print_ascii_layout()
-    game.ask_player_for_move(False)
+    game._ask_player_for_move(False)
     game.print_ascii_layout()
-    game.ask_player_for_move(True)
+    game._ask_player_for_move(True)
     game.print_ascii_layout()
-    game.ask_player_for_move(False)
+    game._ask_player_for_move(False)
     game.print_ascii_layout()

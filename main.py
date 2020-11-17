@@ -22,12 +22,6 @@ class TicTacToe:
                     possibilities.append((x, y))
         return possibilities if possibilities else False
 
-    def _interpret_human_move(self, x, y):
-        return x-1, 3-y
-
-    def _do_move(self, x, y, player):
-        self._board[y % 3][x % 3] = 1 if player else -1
-
     def ask_player_for_move(self, player):
         print(f'{"What is your move?":^80}')
         print(f'{"Type in each value and press Enter:":^80}')
@@ -51,6 +45,12 @@ class TicTacToe:
                     return value
             except ValueError:
                 print(f'{"Oops! The input must be an int from 1 to 3!":^80}')
+
+    def _interpret_human_move(self, x, y):
+        return x-1, 3-y
+
+    def _do_move(self, x, y, player):
+        self._board[y][x] = 1 if player else -1
 
     def _generate_ascii_board(self):
         """

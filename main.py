@@ -1,42 +1,68 @@
+'''try:
+    from termcolor import cprint, colored
+    COLOR_INSTALLED = True
+except ModuleNotFoundError:
+    COLOR_INSTALLED = False
+'''
+
+
 class TicTacToe:
     def __init__(self):
-        '''self._board = [[0, 0, 0],
+        self._board = [[0, 0, 0],
                        [0, 0, 0],
-                       [0, 0, 0]]'''
-
-        self._board = [[-1, -1, 0],
-                       [1, -1, 1],
-                       [0, 1, 0]]
+                       [0, 0, 0]]
         self._characters = [' ', '◯', '✕']
 
     def get_possible_moves(self):
         possibilities = []
         for y in range(3):
             for x in range(3):
-                if self._board[2-y][x] != 0:
+                if self._board[2-y][x] == 0:
                     possibilities.append((x, y))
         return possibilities if possibilities else False
 
-    def do_move(self, x, y, player):
-        self._board[2-y][x] = 1 if player else -1
+    def interpret_human_move(self, x, y):
+        self.do_move(x-1, 3-y, True)
 
-    def generate_ascii_board(self):
+    def do_move(self, x, y, player):
+        self._board[y % 3][x % 3] = 1 if player else -1
+
+    def _generate_ascii_board(self):
+        """
+        Generates and returns tuple of strings that represent the board.
+        """
         output = []
-        upper_frame = "┏━━━┳━━━┳━━━┓"
-        inner_frame = "┣━━━╋━━━╋━━━┫"
-        lower_frame = "┗━━━┻━━━┻━━━┛"
+        upper_frame = '┏━━━┳━━━┳━━━┓'
+        inner_frame = '┣━━━╋━━━╋━━━┫'
+        lower_frame = '┗━━━┻━━━┻━━━┛'
 
         output.append(upper_frame)
         row_counter = 0
         for row in self._board:
-            line = ""
+            line = ''
             for element in row:
-                line += f"┃ {self._characters[element]} "
+                line += f'┃ {self._characters[element]} '
             row_counter += 1
-            line += "┃"
+            line += '┃'
             output.append(line)
             output.append(inner_frame if row_counter < 3 else lower_frame)
         return tuple(output)
+
+    def print_ascii_layout(self, player=True):
+        """
+        Masterpiece of ASCII engineering.
+        Not really important.
+        """
+        output = f'\n\n\n\n{"Tic Tac Toe":^80}\n\n'
+        temp = f"It's {'◯' if player else '✕'} turn!"
+        output += f'{temp:^80}\n\n'
+        counter = 0
+        for line in self._generate_ascii_board():
+            counter += 1
+            temp = f'{4 - counter // 2 if counter % 2 == 0 else ""} {line}  '
+            output += f'{temp:^80}\n'
+        output += f'{"1   2   3":^80}\n\n\n'
+        print(output)
 
 
 class Node:
@@ -53,4 +79,6 @@ def minimax():
 
 if __name__ == "__main__":
     game = TicTacToe()
-    print(game.generate_ascii_board())
+    game.interpret_human_move(3, 3)
+    game.print_ascii_layout()
+    print(game.get_possible_moves())

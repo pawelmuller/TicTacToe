@@ -9,6 +9,17 @@ class TicTacToe:
                        [0, 1, 0]]
         self._characters = [' ', '◯', '✕']
 
+    def get_possible_moves(self):
+        possibilities = []
+        for y in range(3):
+            for x in range(3):
+                if self._board[2-y][x] != 0:
+                    possibilities.append((x, y))
+        return possibilities if possibilities else False
+
+    def do_move(self, x, y, player):
+        self._board[2-y][x] = 1 if player else -1
+
     def generate_ascii_board(self):
         output = []
         upper_frame = "┏━━━┳━━━┳━━━┓"
@@ -26,17 +37,6 @@ class TicTacToe:
             output.append(line)
             output.append(inner_frame if row_counter < 3 else lower_frame)
         return tuple(output)
-
-    def get_possible_moves(self):
-        possibilities = []
-        for y in range(3):
-            for x in range(3):
-                if self._board[2-y][x] != 0:
-                    possibilities.append((x, y))
-        return possibilities if possibilities else False
-
-    def do_move(self, x, y, player):
-        self._board[2-y][x] = 1 if player else -1
 
 
 class Node:

@@ -18,7 +18,7 @@ class TicTacToe:
         possibilities = []
         for y in range(3):
             for x in range(3):
-                if self._board[2-y][x] == 0:
+                if self._board[y][x] == 0:
                     possibilities.append((x, y))
         return possibilities if possibilities else False
 
@@ -172,12 +172,8 @@ def clear_screen():
 
 if __name__ == "__main__":
     game = TicTacToe()
-    x, y = game._interpret_human_move(3, 3)
-    game._do_move(x, y, False)
-    game.print_ascii_layout()
-    game._ask_player_for_move(False)
-    game.print_ascii_layout()
-    game._ask_player_for_move(True)
-    game.print_ascii_layout()
-    game._ask_player_for_move(False)
-    game.print_ascii_layout()
+    indicator = True
+    while(not game.is_the_game_over()):
+        game.print_ascii_layout()
+        game._ask_player_for_move(indicator)
+        indicator = not indicator

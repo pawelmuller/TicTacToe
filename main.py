@@ -32,6 +32,18 @@ class TicTacToe:
             return True
         return False
 
+    def _check_columns(self):
+        """
+        Checks whether any column belongs to one player.
+        """
+        for column in range(3):
+            sum = 0
+            for row in range(3):
+                sum += self._board[row][column]
+            if abs(sum) == 3:
+                return True
+        return False
+
     def _ask_player_for_move(self, player):
         """
         Asks player for coordinates, then proceeds to performing the move.

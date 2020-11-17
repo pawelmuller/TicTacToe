@@ -9,20 +9,23 @@ class TicTacToe:
                        [0, 1, 0]]
         self._characters = [' ', '◯', '✕']
 
-    def print_board(self):
-        output = ""
-        upper_frame = "┏━━━┳━━━┳━━━┓\n"
-        inner_frame = "┣━━━╋━━━╋━━━┫\n"
-        lower_frame = "┗━━━┻━━━┻━━━┛\n"
+    def generate_ascii_board(self):
+        output = []
+        upper_frame = "┏━━━┳━━━┳━━━┓"
+        inner_frame = "┣━━━╋━━━╋━━━┫"
+        lower_frame = "┗━━━┻━━━┻━━━┛"
 
-        output += upper_frame
+        output.append(upper_frame)
         row_counter = 0
         for row in self._board:
+            line = ""
             for element in row:
-                output += f"┃ {self._characters[element]} "
+                line += f"┃ {self._characters[element]} "
             row_counter += 1
-            output += f"┃\n{inner_frame if row_counter < 3 else lower_frame}"
-        print(output)
+            line += "┃"
+            output.append(line)
+            output.append(inner_frame if row_counter < 3 else lower_frame)
+        return tuple(output)
 
     def get_possible_moves(self):
         possibilities = []
@@ -47,5 +50,5 @@ def minimax():
 
 if __name__ == "__main__":
     game = TicTacToe()
-    game.print_board()
+    print(game.generate_ascii_board())
 

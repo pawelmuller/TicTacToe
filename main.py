@@ -1,9 +1,3 @@
-'''try:
-    from termcolor import cprint, colored
-    COLOR_INSTALLED = True
-except ModuleNotFoundError:
-    COLOR_INSTALLED = False
-'''
 import os
 
 

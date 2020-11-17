@@ -22,6 +22,16 @@ class TicTacToe:
                     possibilities.append((x, y))
         return possibilities if possibilities else False
 
+    def _check_diagonals(self):
+        """
+        Checks whether any diagonal belongs to one player.
+        """
+        if abs(self._board[0][0] + self._board[1][1] + self._board[2][2]) == 3:
+            return True
+        if abs(self._board[0][2] + self._board[1][1] + self._board[2][0]) == 3:
+            return True
+        return False
+
     def _ask_player_for_move(self, player):
         """
         Asks player for coordinates, then proceeds to performing the move.
@@ -131,7 +141,7 @@ def clear_screen():
 if __name__ == "__main__":
     game = TicTacToe()
     x, y = game._interpret_human_move(3, 3)
-    game._do_move(x, y, True)
+    game._do_move(x, y, False)
     game.print_ascii_layout()
     game._ask_player_for_move(False)
     game.print_ascii_layout()

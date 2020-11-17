@@ -22,11 +22,35 @@ class TicTacToe:
                     possibilities.append((x, y))
         return possibilities if possibilities else False
 
-    def interpret_human_move(self, x, y, player):
-        self.do_move(x-1, 3-y, player)
+    def _interpret_human_move(self, x, y):
+        return x-1, 3-y
 
-    def do_move(self, x, y, player):
+    def _do_move(self, x, y, player):
         self._board[y % 3][x % 3] = 1 if player else -1
+
+    def ask_player_for_move(self, player):
+        print(f'{"What is your move?":^80}')
+        print(f'{"Type in each value and press Enter:":^80}')
+        while True:
+            x = self._ask_player_for_value('x')
+            y = self._ask_player_for_value('y')
+            x, y = self._interpret_human_move(x, y)
+            if (x, y) in self.get_possible_moves():
+                break
+            else:
+                print(f'{"That place is already taken! Try again:":^80}')
+        self._do_move(x, y, player)
+
+    def _ask_player_for_value(self, value_name):
+        while True:
+            try:
+                value = int(input(f'{f"{value_name} = ":>40}'))
+                if value < 1 or value > 3:
+                    raise ValueError
+                else:
+                    return value
+            except ValueError:
+                print(f'{"Oops! The input must be an int from 1 to 3!":^80}')
 
     def _generate_ascii_board(self):
         """
@@ -85,6 +109,12 @@ def clear_screen():
 
 if __name__ == "__main__":
     game = TicTacToe()
-    game.interpret_human_move(3, 3, True)
-    game.interpret_human_move(1, 2, False)
+    x, y = game._interpret_human_move(3, 3)
+    game._do_move(x, y, True)
+    game.print_ascii_layout()
+    game.ask_player_for_move(False)
+    game.print_ascii_layout()
+    game.ask_player_for_move(True)
+    game.print_ascii_layout()
+    game.ask_player_for_move(False)
     game.print_ascii_layout()

@@ -1,4 +1,5 @@
 import os
+from math import inf
 
 O_value = True
 X_value = False
@@ -212,9 +213,26 @@ class Node:
     def is_terminal(self):
         pass
 
+    def get_heuristic_value(self):
+        pass
 
-def minimax():
-    pass
+    def get_children(self):
+        pass
+
+
+def minimax(node, depth, maximizingPlayer):
+    if depth == 0 or node.is_terminal():
+        return node.get_heuristic_value()
+    if maximizingPlayer:
+        value = -inf
+        for child in node.get_children():
+            value = max(value, minimax(child, depth-1, False))
+        return value
+    else:
+        value = inf
+        for child in node.get_children():
+            value = min(value, minimax(child, depth-1, True))
+        return value
 
 
 def clear_screen():

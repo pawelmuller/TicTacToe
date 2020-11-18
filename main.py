@@ -1,5 +1,8 @@
 import os
 
+O_value = True
+X_value = False
+
 
 class TicTacToe:
     def __init__(self):
@@ -129,14 +132,13 @@ class TicTacToe:
             output.append(inner_frame if row_counter < 3 else lower_frame)
         return tuple(output)
 
-    def print_ascii_layout(self, next_player=True):
+    def _print_ascii_layout(self, message=''):
         """
         Masterpiece of ASCII engineering.
         Not really important.
         """
         output = f'\n\n\n\n{"Tic Tac Toe":^80}\n\n'
-        temp = f"It's {'◯' if next_player else '✕'} turn!"
-        output += f'{temp:^80}\n\n'
+        output += f'{message:^80}\n\n'
         counter = 0
         for line in self._generate_ascii_board():
             counter += 1
@@ -146,8 +148,18 @@ class TicTacToe:
         clear_screen()
         print(output)
 
-    def start(self, is_singleplayer=True, is_impossible=False):
-        pass
+    def print_ingame_layout(self, next_player):
+        message = f"It's {'◯' if next_player else '✕'} turn!"
+        self.print_ascii_layout(message)
+
+    def print_result_layout(self, result):
+        if result == 1:
+            message = '◯ won!'
+        elif result == -1:
+            message = '✕ won!'
+        else:
+            message = "It's a draw!"
+        self.print_ascii_layout(message)
 
 
 class Node:

@@ -206,7 +206,15 @@ class Node:
             return DRAW
 
     def is_terminal(self):
-        pass
+        """
+        Checks whether node is terminal.
+        Returns proper boolean.
+        """
+        if TicTacToe.check_if_wins(self, self.player, self.node):
+            return True
+        if not TicTacToe.get_possible_moves(self, self.node):
+            return True
+        return False
 
     def get_heuristic_value(self):
         pass

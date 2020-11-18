@@ -34,16 +34,21 @@ class TicTacToe:
             if not self._check_columns():
                 if not self._check_rows():
                     return False
-        return True
+                else:
+                    return self._check_rows()
+            else:
+                return self._check_columns()
+        else:
+            return self._check_diagonals()
 
     def _check_diagonals(self):
         """
         Checks whether any diagonal belongs to one player.
         """
         if abs(self._board[0][0] + self._board[1][1] + self._board[2][2]) == 3:
-            return True
+            return self._board[0][0]
         if abs(self._board[0][2] + self._board[1][1] + self._board[2][0]) == 3:
-            return True
+            return self._board[0][2]
         return False
 
     def _check_columns(self):
@@ -55,7 +60,7 @@ class TicTacToe:
             for row in range(3):
                 sum += self._board[row][column]
             if abs(sum) == 3:
-                return True
+                return self._board[0][column]
         return False
 
     def _check_rows(self):
@@ -67,7 +72,7 @@ class TicTacToe:
             for column in range(3):
                 sum += self._board[row][column]
             if abs(sum) == 3:
-                return True
+                return self._board[row][0]
         return False
 
     def _ask_player_for_move(self, player):

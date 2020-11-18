@@ -26,11 +26,10 @@ class TicTacToe:
         return possibilities if possibilities else False
 
     def is_the_game_over(self):
-        if self.get_possible_moves():
-            if not self._check_diagonals():
-                if not self._check_columns():
-                    if not self._check_rows():
-                        return False
+        if not self._check_diagonals():
+            if not self._check_columns():
+                if not self._check_rows():
+                    return False
         return True
 
     def _check_diagonals(self):
@@ -90,7 +89,7 @@ class TicTacToe:
         """
         while True:
             try:
-                value = int(input(f'{f"{value_name} = ":>40}'))
+                value = int(input(f'{f"{value_name} = ":>41}'))
                 if value < 1 or value > 3:
                     raise ValueError
                 else:
@@ -150,7 +149,7 @@ class TicTacToe:
 
     def print_ingame_layout(self, next_player):
         message = f"It's {'◯' if next_player else '✕'} turn!"
-        self.print_ascii_layout(message)
+        self._print_ascii_layout(message)
 
     def print_result_layout(self, result):
         if result == 1:
@@ -159,7 +158,34 @@ class TicTacToe:
             message = '✕ won!'
         else:
             message = "It's a draw!"
-        self.print_ascii_layout(message)
+        self._print_ascii_layout(message)
+
+    def conduct_game(self, player_1, player_2):
+        while True:
+            self.print_ingame_layout(True)
+            player_1(True)
+
+            if self.is_the_game_over():
+                return 1
+            if not self.get_possible_moves():
+                return 0
+
+            self.print_ingame_layout(False)
+            player_2(False)
+
+            if self.is_the_game_over():
+                return -1
+            if not self.get_possible_moves():
+                return 0
+
+    def start(self, is_singleplayer=True):
+        if is_singleplayer:
+            result = self.conduct_game(self._ask_player_for_move,
+                                       self._ask_AI_for_move)
+        else:
+            result = self.conduct_game(self._ask_player_for_move,
+                                       self._ask_player_for_move)
+        self.print_result_layout(result)
 
 
 class Node:
@@ -184,8 +210,4 @@ def clear_screen():
 
 if __name__ == "__main__":
     game = TicTacToe()
-    indicator = True
-    while(not game.is_the_game_over()):
-        game.print_ascii_layout()
-        game._ask_player_for_move(indicator)
-        indicator = not indicator
+    game.start(False)

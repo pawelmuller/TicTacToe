@@ -50,7 +50,7 @@ class TicTacToe:
         else:
             return False
 
-    def _ask_AI_for_move(self, player):
+    def _ask_ai_for_move(self, player):
         node = Node(deepcopy(self._board), player)
         x, y = node.get_best_move()
         self._do_move(x, y, player)
@@ -186,7 +186,7 @@ class TicTacToe:
         """
         if is_singleplayer:
             result = self._conduct_game(self._ask_player_for_move,
-                                        self._ask_AI_for_move)
+                                        self._ask_ai_for_move)
         else:
             result = self._conduct_game(self._ask_player_for_move,
                                         self._ask_player_for_move)

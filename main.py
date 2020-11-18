@@ -1,5 +1,7 @@
 import os
 from math import inf
+from random import randint
+from copy import deepcopy
 
 MIN = -1
 MAX = 1
@@ -16,14 +18,16 @@ class TicTacToe:
                        [0, 0, 0]]
         self._characters = [' ', '◯', '✕']
 
-    def get_possible_moves(self):
+    def get_possible_moves(self, board=None):
         """
         Returns list of tuples containing possible moves on the board.
         """
+        if not board:
+            board = self._board
         possibilities = []
         for y in range(3):
             for x in range(3):
-                if self._board[y][x] == 0:
+                if board[y][x] == 0:
                     possibilities.append((x, y))
         return possibilities if possibilities else False
 
@@ -45,6 +49,11 @@ class TicTacToe:
             return True
         else:
             return False
+
+    def _ask_AI_for_move(self, player):
+        node = Node(deepcopy(self._board))
+        x, y = node.get_best_move()
+        self._do_move(x, y, player)
 
     def _ask_player_for_move(self, player):
         """
@@ -183,13 +192,13 @@ class TicTacToe:
 
 
 class Node:
-    def __init__(self):
-        self._children = []
+    def __init__(self, node):
+        self.node = node
 
     def evaluate(self, board):
-        if TicTacToe.check_if_wins(MAX, board):
+        if TicTacToe.check_if_wins(self, MAX, board):
             return MAX
-        elif TicTacToe.check_if_wins(MIN, board):
+        elif TicTacToe.check_if_wins(self, MIN, board):
             return MIN
         else:
             return DRAW
@@ -201,7 +210,10 @@ class Node:
         pass
 
     def get_children(self):
-        return self._children
+        return TicTacToe.get_possible_moves(self, self.node)
+
+    def get_best_move(self):
+        pass
 
 
 def minimax(node, depth, maximizing_player):

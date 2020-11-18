@@ -217,7 +217,7 @@ class Node:
         pass
 
     def get_children(self):
-        pass
+        return self._children
 
 
 def minimax(node, depth, maximizingPlayer):

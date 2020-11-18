@@ -26,6 +26,9 @@ class TicTacToe:
         return possibilities if possibilities else False
 
     def is_the_game_over(self):
+        """
+        Checks whether a player has won the game.
+        """
         if not self._check_diagonals():
             if not self._check_columns():
                 if not self._check_rows():
@@ -147,11 +150,17 @@ class TicTacToe:
         clear_screen()
         print(output)
 
-    def print_ingame_layout(self, next_player):
+    def _print_ingame_layout(self, next_player):
+        """
+        Prints in-game layout.
+        """
         message = f"It's {'◯' if next_player else '✕'} turn!"
         self._print_ascii_layout(message)
 
-    def print_result_layout(self, result):
+    def _print_result_layout(self, result):
+        """
+        Prints results.
+        """
         if result == 1:
             message = '◯ won!'
         elif result == -1:
@@ -160,9 +169,13 @@ class TicTacToe:
             message = "It's a draw!"
         self._print_ascii_layout(message)
 
-    def conduct_game(self, player_1, player_2):
+    def _conduct_game(self, player_1, player_2):
+        """
+        Conducts game.
+        Allows players to perform their moves.
+        """
         while True:
-            self.print_ingame_layout(True)
+            self._print_ingame_layout(True)
             player_1(True)
 
             if self.is_the_game_over():
@@ -170,7 +183,7 @@ class TicTacToe:
             if not self.get_possible_moves():
                 return 0
 
-            self.print_ingame_layout(False)
+            self._print_ingame_layout(False)
             player_2(False)
 
             if self.is_the_game_over():
@@ -179,13 +192,17 @@ class TicTacToe:
                 return 0
 
     def start(self, is_singleplayer=True):
+        """
+        Starts the game.
+        Allows AI to play in singleplayer mode.
+        """
         if is_singleplayer:
-            result = self.conduct_game(self._ask_player_for_move,
-                                       self._ask_AI_for_move)
+            result = self._conduct_game(self._ask_player_for_move,
+                                        self._ask_AI_for_move)
         else:
-            result = self.conduct_game(self._ask_player_for_move,
-                                       self._ask_player_for_move)
-        self.print_result_layout(result)
+            result = self._conduct_game(self._ask_player_for_move,
+                                        self._ask_player_for_move)
+        self._print_result_layout(result)
 
 
 class Node:

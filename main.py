@@ -71,9 +71,10 @@ class TicTacToe:
                 print(f'{"That place is already taken! Try again:":^80}')
         self._do_move(x, y, player)
 
-    def _ask_player_for_value(self, value_name):
+    @staticmethod
+    def _ask_player_for_value(value_name):
         """
-        Asks player for integer balue between 1 and 3
+        Asks player for integer value between 1 and 3
         as long as it is correct.
         """
         while True:
@@ -86,7 +87,8 @@ class TicTacToe:
             except ValueError:
                 print(f'{"Oops! The input must be an int from 1 to 3!":^80}')
 
-    def _interpret_human_move(self, x, y):
+    @staticmethod
+    def _interpret_human_move(x, y):
         """
         Converts human-friendly coordinates into computer-friendly ones,
         as indexes start from 0.

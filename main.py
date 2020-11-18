@@ -186,6 +186,14 @@ class Node:
     def __init__(self):
         self._children = []
 
+    def evaluate(self, board):
+        if TicTacToe.check_if_wins(MAX, board):
+            return MAX
+        elif TicTacToe.check_if_wins(MIN, board):
+            return MIN
+        else:
+            return DRAW
+
     def is_terminal(self):
         pass
 

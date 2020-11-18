@@ -51,7 +51,7 @@ class TicTacToe:
             return False
 
     def _ask_AI_for_move(self, player):
-        node = Node(deepcopy(self._board))
+        node = Node(deepcopy(self._board), player)
         x, y = node.get_best_move()
         self._do_move(x, y, player)
 
@@ -192,8 +192,10 @@ class TicTacToe:
 
 
 class Node:
-    def __init__(self, node):
+    def __init__(self, node, player, coordinates=None):
         self.node = node
+        self.player = player
+        self.coordinates = coordinates
 
     def evaluate(self, board):
         if TicTacToe.check_if_wins(self, MAX, board):
@@ -210,7 +212,16 @@ class Node:
         pass
 
     def get_children(self):
-        return TicTacToe.get_possible_moves(self, self.node)
+        children = []
+
+        for x, y in TicTacToe.get_possible_moves(self, self.node):
+            new_node = deepcopy(self.node)
+            new_node[x, y] = self.player
+            new_player = MIN if self.player == MAX else MAX
+            child = Node(new_node, new_player, (x, y))
+            children.append(child)
+
+        return children
 
     def get_best_move(self):
         pass

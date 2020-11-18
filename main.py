@@ -1,6 +1,6 @@
 import os
 from math import inf
-from random import randint
+from random import choice
 from copy import deepcopy
 
 MIN = -1
@@ -196,6 +196,7 @@ class Node:
         self.node = node
         self.player = player
         self.coordinates = coordinates
+        self.maximizing_player = True if player == MAX else MIN
 
     def evaluate(self, board):
         if TicTacToe.check_if_wins(self, MAX, board):
@@ -233,7 +234,7 @@ class Node:
 
         for x, y in TicTacToe.get_possible_moves(self, self.node):
             new_node = deepcopy(self.node)
-            new_node[x, y] = self.player
+            new_node[x][y] = self.player
             new_player = MIN if self.player == MAX else MAX
             child = Node(new_node, new_player, (x, y))
             children.append(child)
@@ -241,7 +242,20 @@ class Node:
         return children
 
     def get_best_move(self):
-        pass
+        depth = len(TicTacToe.get_possible_moves(self, self.node))
+        values = []
+        children = self.get_children()
+        for child in children:
+            value = minimax(child, depth-1, self.maximizing_player)
+            values.append(value)
+
+        m = max(values)
+        indexes = [i for i, j in enumerate(values) if j == m]
+        best_children = []
+        for index in indexes:
+            best_children.append(children[index])
+
+        return choice(best_children).coordinates
 
 
 def minimax(node, depth, maximizing_player):
@@ -269,4 +283,4 @@ def clear_screen():
 
 if __name__ == "__main__":
     game = TicTacToe()
-    game.start(False)
+    game.start(True)

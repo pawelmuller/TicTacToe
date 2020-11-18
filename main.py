@@ -220,10 +220,10 @@ class Node:
         return self._children
 
 
-def minimax(node, depth, maximizingPlayer):
+def minimax(node, depth, maximizing_player):
     if depth == 0 or node.is_terminal():
         return node.get_heuristic_value()
-    if maximizingPlayer:
+    if maximizing_player:
         value = -inf
         for child in node.get_children():
             value = max(value, minimax(child, depth-1, False))

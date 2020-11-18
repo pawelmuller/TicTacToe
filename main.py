@@ -217,7 +217,16 @@ class Node:
         return False
 
     def get_heuristic_value(self):
-        pass
+        """
+        Calculates heuristic value of node.
+        """
+        value = 0
+        heuristics = [[3, 2, 3], [2, 4, 2], [3, 2, 3]]
+
+        for i in range(3):
+            for j in range(3):
+                value += self.node[i][j] * heuristics[i][j]
+        return value
 
     def get_children(self):
         children = []

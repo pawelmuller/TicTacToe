@@ -1,8 +1,9 @@
 import os
 from math import inf
 
-O_value = True
-X_value = False
+MIN = -1
+MAX = 1
+DRAW = 0
 
 
 class TicTacToe:
@@ -26,54 +27,24 @@ class TicTacToe:
                     possibilities.append((x, y))
         return possibilities if possibilities else False
 
-    def is_the_game_over(self):
-        """
-        Checks whether a player has won the game.
-        """
-        if not self._check_diagonals():
-            if not self._check_columns():
-                if not self._check_rows():
-                    return False
-                else:
-                    return self._check_rows()
-            else:
-                return self._check_columns()
+    def check_if_wins(self, player_value, board=None):
+        if not board:
+            board = self._board
+        win_situations = [
+            (board[0][0], board[1][0], board[2][0]),
+            (board[0][1], board[1][1], board[2][1]),
+            (board[0][2], board[1][2], board[2][2]),
+            (board[0][0], board[0][1], board[0][2]),
+            (board[1][0], board[1][1], board[1][2]),
+            (board[2][0], board[2][1], board[2][2]),
+            (board[0][0], board[1][1], board[2][2]),
+            (board[2][0], board[1][1], board[0][2]),
+        ]
+
+        if (player_value, player_value, player_value) in win_situations:
+            return True
         else:
-            return self._check_diagonals()
-
-    def _check_diagonals(self):
-        """
-        Checks whether any diagonal belongs to one player.
-        """
-        if abs(self._board[0][0] + self._board[1][1] + self._board[2][2]) == 3:
-            return self._board[0][0]
-        if abs(self._board[0][2] + self._board[1][1] + self._board[2][0]) == 3:
-            return self._board[0][2]
-        return False
-
-    def _check_columns(self):
-        """
-        Checks whether any column belongs to one player.
-        """
-        for column in range(3):
-            sum = 0
-            for row in range(3):
-                sum += self._board[row][column]
-            if abs(sum) == 3:
-                return self._board[0][column]
-        return False
-
-    def _check_rows(self):
-        """
-        Checks whether any row belongs to one player.
-        """
-        for row in range(3):
-            sum = 0
-            for column in range(3):
-                sum += self._board[row][column]
-            if abs(sum) == 3:
-                return self._board[row][0]
-        return False
+            return False
 
     def _ask_player_for_move(self, player):
         """
@@ -117,7 +88,7 @@ class TicTacToe:
         """
         Performs the move.
         """
-        self._board[y][x] = 1 if player else -1
+        self._board[y][x] = player
 
     def _generate_ascii_board(self):
         """
@@ -160,16 +131,16 @@ class TicTacToe:
         """
         Prints in-game layout.
         """
-        message = f"It's {'◯' if next_player else '✕'} turn!"
+        message = f"It's {self._characters[next_player]} turn!"
         self._print_ascii_layout(message)
 
     def _print_result_layout(self, result):
         """
         Prints results.
         """
-        if result == 1:
+        if result == MAX:
             message = '◯ won!'
-        elif result == -1:
+        elif result == MIN:
             message = '✕ won!'
         else:
             message = "It's a draw!"
@@ -181,21 +152,21 @@ class TicTacToe:
         Allows players to perform their moves.
         """
         while True:
-            self._print_ingame_layout(True)
-            player_1(True)
+            self._print_ingame_layout(MIN)
+            player_1(MIN)
 
-            if self.is_the_game_over():
-                return 1
+            if self.check_if_wins(MIN):
+                return MIN
             if not self.get_possible_moves():
-                return 0
+                return DRAW
 
-            self._print_ingame_layout(False)
-            player_2(False)
+            self._print_ingame_layout(MAX)
+            player_2(MAX)
 
-            if self.is_the_game_over():
-                return -1
+            if self.check_if_wins(MAX):
+                return MAX
             if not self.get_possible_moves():
-                return 0
+                return DRAW
 
     def start(self, is_singleplayer=True):
         """

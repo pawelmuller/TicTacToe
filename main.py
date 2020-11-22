@@ -11,7 +11,7 @@ DRAW = 0
 class TicTacToe:
     def __init__(self, depth, is_maximizing=True, board=None):
         """
-        Initiates the board with empty values.
+        Initiates the object with given parameters.
         """
         self._depth = depth
         self._is_maximizing = is_maximizing
@@ -23,7 +23,9 @@ class TicTacToe:
                            [0, 0, 0]]
         self._characters = [' ', '◯', '✕']
         self._value = 0
-        self._player_value = MAX if is_maximizing else MIN
+
+    def __repr__(self):
+        return f"{str(self._board)}; {self._value}"
 
     def get_possible_moves(self):
         """
@@ -37,15 +39,21 @@ class TicTacToe:
         return possibilities
 
     def get_children(self):
+        """
+        Returns node's children.
+        """
         return self._children
 
     def create_children(self):
+        """
+        Creates a child node for all empty places on board.
+        """
         self._children = []
         possibilities = self.get_possible_moves()
         if possibilities:
             for x, y in possibilities:
                 new_node = deepcopy(self._board)
-                new_node[y][x] = self._player_value
+                new_node[y][x] = MAX if self._is_maximizing else MIN
                 child = TicTacToe(self._depth, not self._is_maximizing,
                                   new_node)
                 self._children.append(child)
@@ -104,7 +112,7 @@ class TicTacToe:
         Checks whether node is terminal.
         Returns proper boolean.
         """
-        if self.get_winner() or not self.get_possible_moves():
+        if self.get_winner() != 0 or not self.get_possible_moves():
             return True
         return False
 
@@ -112,12 +120,12 @@ class TicTacToe:
         """
         Calculates heuristic value of node.
         """
-        winner = self.get_winner()
-        if winner:
-            if winner == MAX:
-                return inf
+        if self.is_terminal():
+            winner = self.get_winner()
+            if winner:
+                return winner * inf
             else:
-                return -inf
+                return 0
         else:
             value = 0
             heuristics = [[3, 2, 3], [2, 4, 2], [3, 2, 3]]
@@ -132,27 +140,33 @@ class TicTacToe:
         Gets the best possible move from AI.
         """
         if player == MAX:
-            is_maximalizing = True
+            self._is_maximizing = True
         else:
-            is_maximalizing = False
+            self._is_maximizing = False
 
-        self._value = minimax(self, self._depth, is_maximalizing)
-        self._board = self.get_best_move(is_maximalizing)
+        self._value = minimax(self, self._depth, self._is_maximizing)
+        self._board = self.get_best_move()
 
-    def get_best_move(self, is_maximizing):
+    def get_best_move(self):
+        """
+        Collects every child value into a single list.
+        Then, choses the best one (or random from best ones, if more
+        than one child is evaluated with equal, best value) to copy
+        its board and therefore perform move.
+        """
         values = []
         children = self.get_children()
         for child in children:
-            value = minimax(child, self._depth, is_maximizing)
+            value = minimax(child, self._depth, self._is_maximizing)
             values.append(value)
 
-        m = max(values) if is_maximizing else min(values)
+        m = max(values) if self._is_maximizing else min(values)
         indexes = [i for i, j in enumerate(values) if j == m]
         best_children = []
         for index in indexes:
             best_children.append(children[index])
 
-        return choice(best_children)._board
+        return deepcopy(choice(best_children)._board)
 
     def ask_player_for_move(self, player):
         """
@@ -265,7 +279,7 @@ class TicTacToe:
             self.print_ingame_layout(MIN)
             player_1(MIN)
 
-            if self.get_winner():
+            if self.get_winner() == MIN:
                 return MIN
             if not self.get_possible_moves():
                 return DRAW
@@ -273,7 +287,7 @@ class TicTacToe:
             self.print_ingame_layout(MAX)
             player_2(MAX)
 
-            if self.get_winner():
+            if self.get_winner() == MAX:
                 return MAX
             if not self.get_possible_moves():
                 return DRAW
@@ -299,18 +313,18 @@ class TicTacToe:
 def minimax(node, depth, maximizing_player):
     node.create_children()
     if depth == 0 or node.is_terminal():
-        node.value = node.get_heuristic_value()
-        return node.value
-    if maximizing_player:
-        node.value = -inf
+        node._value = node.get_heuristic_value()
+        return node._value
+    elif maximizing_player:
+        node._value = -inf
         for child in node._children:
-            node.value = max(node.value, minimax(child, depth-1, False))
-        return node.value
+            node._value = max(node._value, minimax(child, depth-1, False))
+        return node._value
     else:
-        node.value = inf
+        node._value = inf
         for child in node._children:
-            node.value = min(node.value, minimax(child, depth-1, True))
-        return node.value
+            node._value = min(node._value, minimax(child, depth-1, True))
+        return node._value
 
 
 def clear_screen():
@@ -322,5 +336,5 @@ def clear_screen():
 
 
 if __name__ == "__main__":
-    game = TicTacToe(9)
-    game.start(True, True)
+    game = TicTacToe(2)
+    game.start(True, False)

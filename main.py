@@ -50,34 +50,61 @@ class TicTacToe:
                                   new_node)
                 self._children.append(child)
 
-    def check_if_over(self):
+    def get_winner(self):
         """
-        Checks whether anyone won the game.
+        Checks whether a player has won the game.
         """
-        win_situations = [
-            (self._board[0][0], self._board[1][0], self._board[2][0]),
-            (self._board[0][1], self._board[1][1], self._board[2][1]),
-            (self._board[0][2], self._board[1][2], self._board[2][2]),
-            (self._board[0][0], self._board[0][1], self._board[0][2]),
-            (self._board[1][0], self._board[1][1], self._board[1][2]),
-            (self._board[2][0], self._board[2][1], self._board[2][2]),
-            (self._board[0][0], self._board[1][1], self._board[2][2]),
-            (self._board[2][0], self._board[1][1], self._board[0][2]),
-        ]
-
-        if (MIN, MIN, MIN) in win_situations:
-            return True
-        if (MAX, MAX, MAX) in win_situations:
-            return True
+        if not self.check_diagonals():
+            if not self.check_columns():
+                if not self.check_rows():
+                    return False
+                else:
+                    return self.check_rows()
+            else:
+                return self.check_columns()
         else:
-            return False
+            return self.check_diagonals()
+
+    def check_diagonals(self):
+        """
+        Checks whether any diagonal belongs to one player.
+        """
+        if abs(self._board[0][0] + self._board[1][1] + self._board[2][2]) == 3:
+            return self._board[0][0]
+        if abs(self._board[0][2] + self._board[1][1] + self._board[2][0]) == 3:
+            return self._board[0][2]
+        return False
+
+    def check_columns(self):
+        """
+        Checks whether any column belongs to one player.
+        """
+        for column in range(3):
+            sum = 0
+            for row in range(3):
+                sum += self._board[row][column]
+            if abs(sum) == 3:
+                return self._board[0][column]
+        return False
+
+    def check_rows(self):
+        """
+        Checks whether any row belongs to one player.
+        """
+        for row in range(3):
+            sum = 0
+            for column in range(3):
+                sum += self._board[row][column]
+            if abs(sum) == 3:
+                return self._board[row][0]
+        return False
 
     def is_terminal(self):
         """
         Checks whether node is terminal.
         Returns proper boolean.
         """
-        if self.check_if_over() or not self.get_possible_moves():
+        if self.get_winner() or not self.get_possible_moves():
             return True
         return False
 
@@ -85,11 +112,12 @@ class TicTacToe:
         """
         Calculates heuristic value of node.
         """
-        if self.check_if_over():
-            if self._is_maximizing:
+        winner = self.get_winner()
+        if winner:
+            if winner == MAX:
                 return inf
             else:
-                return -1 * inf
+                return -inf
         else:
             value = 0
             heuristics = [[3, 2, 3], [2, 4, 2], [3, 2, 3]]
@@ -104,18 +132,18 @@ class TicTacToe:
         Gets the best possible move from AI.
         """
         if player == MAX:
-            is_max = True
+            is_maximalizing = True
         else:
-            is_max = False
+            is_maximalizing = False
 
-        self._value = minimax(self, self._depth, is_max)
-        self._board = self.get_best_move(is_max)
+        self._value = minimax(self, self._depth, is_maximalizing)
+        self._board = self.get_best_move(is_maximalizing)
 
     def get_best_move(self, is_maximizing):
         values = []
         children = self.get_children()
         for child in children:
-            value = minimax(child, 6, self._is_maximizing)
+            value = minimax(child, self._depth, is_maximizing)
             values.append(value)
 
         m = max(values) if is_maximizing else min(values)
@@ -237,7 +265,7 @@ class TicTacToe:
             self.print_ingame_layout(MIN)
             player_1(MIN)
 
-            if self.check_if_over():
+            if self.get_winner():
                 return MIN
             if not self.get_possible_moves():
                 return DRAW
@@ -245,19 +273,23 @@ class TicTacToe:
             self.print_ingame_layout(MAX)
             player_2(MAX)
 
-            if self.check_if_over():
+            if self.get_winner():
                 return MAX
             if not self.get_possible_moves():
                 return DRAW
 
-    def start(self, is_singleplayer=True, is_maximizing=True):
+    def start(self, is_singleplayer=True, does_ai_start=False):
         """
         Starts the game.
         Allows AI to play in singleplayer mode.
         """
         if is_singleplayer:
-            result = self.conduct_game(self.ask_player_for_move,
-                                       self.ask_ai_for_move)
+            if does_ai_start:
+                result = self.conduct_game(self.ask_ai_for_move,
+                                           self.ask_player_for_move)
+            else:
+                result = self.conduct_game(self.ask_player_for_move,
+                                           self.ask_ai_for_move)
         else:
             result = self.conduct_game(self.ask_player_for_move,
                                        self.ask_player_for_move)
@@ -290,5 +322,5 @@ def clear_screen():
 
 
 if __name__ == "__main__":
-    game = TicTacToe(6)
-    game.start(True)
+    game = TicTacToe(9)
+    game.start(True, True)

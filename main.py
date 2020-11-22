@@ -1,6 +1,6 @@
 import os
 from math import inf
-from random import choice
+from random import shuffle
 from copy import deepcopy
 
 MIN = -1
@@ -149,24 +149,15 @@ class TicTacToe:
 
     def get_best_move(self):
         """
-        Collects every child value into a single list.
-        Then, choses the best one (or random from best ones, if more
-        than one child is evaluated with equal, best value) to copy
-        its board and therefore perform move.
+        Shuffles children (to keep randomness). Then orders them from the best
+        to the worst (depending on maxi- or minimalizing), then chooses the
+        first one to be glorified.
         """
-        values = []
-        children = self.get_children()
-        for child in children:
-            value = minimax(child, self._depth, self._is_maximizing)
-            values.append(value)
-
-        m = max(values) if self._is_maximizing else min(values)
-        indexes = [i for i, j in enumerate(values) if j == m]
-        best_children = []
-        for index in indexes:
-            best_children.append(children[index])
-
-        return deepcopy(choice(best_children)._board)
+        shuffle(self._children)
+        sorted_children = sorted(self._children,
+                                 key=lambda child: child._value,
+                                 reverse=self._is_maximizing)
+        return sorted_children[0]._board
 
     def ask_player_for_move(self, player):
         """
@@ -336,5 +327,5 @@ def clear_screen():
 
 
 if __name__ == "__main__":
-    game = TicTacToe(2)
+    game = TicTacToe(4)
     game.start(True, False)
